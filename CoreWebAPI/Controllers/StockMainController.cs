@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Entity;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repository.EFCore;
 using Repository.Interface;
@@ -11,16 +13,18 @@ namespace CoreWebAPI.Controllers
     {
         
         private readonly IStockRepository _stockMainRepository;
+        private readonly IMapper _mapper;
 
-        public StockMainController(IStockRepository stockMainRepository)
+        public StockMainController(IStockRepository stockMainRepository,IMapper mapper)
         {
             _stockMainRepository = stockMainRepository;
+            _mapper = mapper;
         }
 
         [HttpGet(Name = "GetStockMain")]
-        public async Task<IEnumerable<StockMain>> Get()
+        public async Task<IEnumerable<StockMainDTO>> Get()
         {
-            return await _stockMainRepository.GetAll();
+            return  _mapper.Map<IEnumerable<StockMainDTO>>(await _stockMainRepository.GetAll());
         }
     }
 }

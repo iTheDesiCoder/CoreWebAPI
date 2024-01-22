@@ -1,3 +1,4 @@
+using CoreWebAPI;
 using Microsoft.EntityFrameworkCore;
 using Repository;
 using Repository.EFCore;
@@ -17,6 +18,7 @@ builder.Services.AddDbContext<TestdbContext>(options => options.UseSqlServer("Da
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped(typeof(IStockRepository), typeof(StockRepository));
 
+builder.Services.AddAutoMapper(typeof(MapperConfig));
 
 var app = builder.Build();
 
