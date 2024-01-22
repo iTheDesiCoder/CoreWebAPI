@@ -1,0 +1,1 @@
+﻿dotnet ef dbcontext scaffold "Data Source=RAKESH;Initial Catalog=TESTDB;Persist Security Info=True;User ID=sa;Password=admin123;Encrypt=True;Trust Server Certificate=True" Microsoft.EntityFrameworkCore.SqlServer -o EFCore
