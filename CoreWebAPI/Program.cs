@@ -15,8 +15,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<TestdbContext>(options => options.UseSqlServer("Data Source=RAKESH;Initial Catalog=TESTDB;Persist Security Info=True;User ID=sa;Password=admin123;Encrypt=True;Trust Server Certificate=True"));
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped(typeof(IStockRepository), typeof(StockRepository));
+
+DependencyInjection.AddClassesMatchingInterfaces(builder.Services, "CoreWebAPI");
+DependencyInjection.AddClassesMatchingInterfaces(builder.Services, "Repository");
+
 
 builder.Services.AddAutoMapper(typeof(MapperConfig));
 
