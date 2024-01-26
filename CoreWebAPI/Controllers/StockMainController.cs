@@ -24,6 +24,7 @@ namespace CoreWebAPI.Controllers
         [HttpGet(Name = "GetStockMain")]
         public async Task<IEnumerable<StockMainDTO>> Get()
         {
+            throw new Exception("Testing");
             return  _mapper.Map<IEnumerable<StockMainDTO>>(await _stockMainRepository.GetAll());
         }
     }
