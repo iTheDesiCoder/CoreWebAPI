@@ -1,14 +1,15 @@
 ﻿using AutoMapper;
-using Entity;
+using Common.Dto;
 using Repository.EFCore;
 
-namespace CoreWebAPI
+namespace API
 {
     public class MapperConfig : Profile
     {
         public MapperConfig()
         {
             CreateMap<StockMain, StockMainDTO>().ReverseMap();
+            CreateMap<RuleEngineRule, RulesDto>().ReverseMap();
         }
     }
 }

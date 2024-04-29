@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Repository.EFCore;
 
-public  class StockMain
+public partial class StockMain
 {
     public string? NasdaqTraded { get; set; }
 

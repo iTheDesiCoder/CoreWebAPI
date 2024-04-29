@@ -1,31 +1,35 @@
-﻿using AutoMapper;
-using Entity;
+﻿using API.Controllers.Interface;
+using AutoMapper;
+using Common.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repository.EFCore;
-using Repository.Interface;
+using Service.Interface;
 
-namespace CoreWebAPI.Controllers
+
+namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class StockMainController : ControllerBase
+    public class StockMainController : ControllerBase, IStockMainController
     {
         
-        private readonly IStockRepository _stockMainRepository;
-        private readonly IMapper _mapper;
-
-        public StockMainController(IStockRepository stockMainRepository,IMapper mapper)
+        private readonly IStockService _stockService;
+        public StockMainController(IStockService stockService)
         {
-            _stockMainRepository = stockMainRepository;
-            _mapper = mapper;
+            _stockService = stockService;
         }
 
         [HttpGet(Name = "GetStockMain")]
-        public async Task<IEnumerable<StockMainDTO>> Get()
+        public async Task<IActionResult> Get()
         {
-            throw new Exception("Testing");
-            return  _mapper.Map<IEnumerable<StockMainDTO>>(await _stockMainRepository.GetAll());
+            return Ok(await _stockService.GetAll());
+        }
+
+        [HttpPost(Name = "SaveStock")]
+        public async Task<IActionResult> SaveStock(StockMainDTO stockDto)
+        {
+           return Ok(await _stockService.SaveStock(stockDto));
         }
     }
 }

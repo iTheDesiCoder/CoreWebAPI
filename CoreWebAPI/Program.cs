@@ -1,9 +1,7 @@
-using CoreWebAPI;
+using API;
 using Microsoft.EntityFrameworkCore;
-using Repository;
 using Repository.EFCore;
-using Repository.Generic;
-using Repository.Interface;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +14,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<TestdbContext>(options => options.UseSqlServer("Data Source=RAKESH;Initial Catalog=TESTDB;Persist Security Info=True;User ID=sa;Password=admin123;Encrypt=True;Trust Server Certificate=True"));
 
-DependencyInjection.AddClassesMatchingInterfaces(builder.Services, "CoreWebAPI");
+DependencyInjection.AddClassesMatchingInterfaces(builder.Services, "API");
+DependencyInjection.AddClassesMatchingInterfaces(builder.Services, "Service");
 DependencyInjection.AddClassesMatchingInterfaces(builder.Services, "Repository");
 
 

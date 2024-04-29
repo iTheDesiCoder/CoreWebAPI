@@ -15,14 +15,72 @@ public partial class TestdbContext : DbContext
     {
     }
 
-   
+
+
+    public virtual DbSet<RuleEngineCategory> RuleEngineCategories { get; set; }
+
+    public virtual DbSet<RuleEngineRule> RuleEngineRules { get; set; }
+
+    public virtual DbSet<StockDetail> StockDetails { get; set; }
+
 
     public virtual DbSet<StockMain> StockMains { get; set; }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Data Source=RAKESH;Initial Catalog=TESTDB;Persist Security Info=True;User ID=sa;Password=admin123;Encrypt=True;Trust Server Certificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        
+
+
+        modelBuilder.Entity<RuleEngineCategory>(entity =>
+        {
+            entity.HasKey(e => e.RuleCatId).HasName("PK__RuleEngi__70201CF7BDADA468");
+
+            entity.ToTable("RuleEngineCategory");
+
+            entity.Property(e => e.RuleCatId).HasColumnName("RuleCatID");
+            entity.Property(e => e.RuleCatAppId)
+                .HasMaxLength(10)
+                .HasColumnName("RuleCatAppID");
+            entity.Property(e => e.RuleCatDesc).HasMaxLength(1000);
+            entity.Property(e => e.RuleCatName).HasMaxLength(100);
+        });
+
+        modelBuilder.Entity<RuleEngineRule>(entity =>
+        {
+            entity.HasKey(e => e.RuleId).HasName("PK__RuleEngi__110458C2F0DC487F");
+
+            entity.Property(e => e.RuleId).HasColumnName("RuleID");
+            entity.Property(e => e.ErrorMessage).HasMaxLength(255);
+            entity.Property(e => e.RuleCatId).HasColumnName("RuleCatID");
+            entity.Property(e => e.RuleName).HasMaxLength(100);
+
+            entity.HasOne(d => d.RuleCat).WithMany(p => p.RuleEngineRules)
+                .HasForeignKey(d => d.RuleCatId)
+                .HasConstraintName("FK__RuleEngin__RuleC__7755B73D");
+        });
+
+        modelBuilder.Entity<StockDetail>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("Stock_Detail");
+
+            entity.Property(e => e.AdjClose)
+                .HasColumnType("decimal(18, 8)")
+                .HasColumnName("Adj Close");
+            entity.Property(e => e.Close).HasColumnType("decimal(18, 8)");
+            entity.Property(e => e.Date).HasColumnType("datetime");
+            entity.Property(e => e.High).HasColumnType("decimal(18, 8)");
+            entity.Property(e => e.Low).HasColumnType("decimal(18, 8)");
+            entity.Property(e => e.Open).HasColumnType("decimal(18, 8)");
+            entity.Property(e => e.Symbol)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+        });
+
 
         modelBuilder.Entity<StockMain>(entity =>
         {

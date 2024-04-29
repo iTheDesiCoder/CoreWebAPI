@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyModel;
 using Scrutor;
 
-namespace CoreWebAPI
+namespace API
 {
     public class DependencyInjection
     {
