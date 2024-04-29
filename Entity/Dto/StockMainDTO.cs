@@ -31,5 +31,12 @@ namespace Common.Dto
         public string? NasdaqSymbol { get; set; }
 
         public string? NextShares { get; set; }
+
+        public StockMainSub StockMainSub { get; set; }
+    }
+
+    public class StockMainSub
+    {
+        public int Price { get; set; }
     }
 }

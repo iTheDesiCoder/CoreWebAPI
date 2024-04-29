@@ -56,18 +56,49 @@ namespace Service
 
             foreach (var result in resultList)
             {
-                if (!result.IsSuccess)
+                if (result.IsSuccess)
                 {
                     failedRules.Add( new RulesDto
                     {
                         RuleName = result.Rule.RuleName,
-                        ErrorMessage = result.Rule.ErrorMessage
+                        ErrorMessage = ReplacePlaceholdersWithPropertyValues(result.Rule.ErrorMessage, entity),
                     });
                 }
             }
             return failedRules;
         }
 
-        
+
+        private string ReplacePlaceholdersWithPropertyValues(string message, T entity)
+        {
+            var placeholders = System.Text.RegularExpressions.Regex.Matches(message, @"\{(.+?)\}")
+                .Cast<System.Text.RegularExpressions.Match>()
+                .Select(m => m.Groups[1].Value)
+                .Distinct();
+
+            foreach (var placeholder in placeholders)
+            {
+                var propertyNames = placeholder.Split('.').Skip(1);
+                object value = entity;
+                foreach (var propertyName in propertyNames)
+                {
+                    if (value == null) break;
+                    var property = value.GetType().GetProperty(propertyName);
+                    if (property == null)
+                    {
+                        value = $"[ERROR: Property {propertyName} does not exist]";
+                        break;
+                    }
+                    value = property.GetValue(value);
+                }
+
+                message = message.Replace($"{{{placeholder}}}", value?.ToString());
+            }
+
+            return message;
+        }
+
+
+
     }
 }
