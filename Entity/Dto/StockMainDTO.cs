@@ -38,5 +38,6 @@ namespace Common.Dto
     public class StockMainSub
     {
         public int Price { get; set; }
+        public List<string> Names { get; set; }
     }
 }

@@ -14,6 +14,7 @@ using Common.Dto;
 using System.Data;
 using RulesEngine.Models;
 using Rule = RulesEngine.Models.Rule;
+using System.Collections;
 
 namespace Service
 {
@@ -83,13 +84,49 @@ namespace Service
                 foreach (var propertyName in propertyNames)
                 {
                     if (value == null) break;
-                    var property = value.GetType().GetProperty(propertyName);
-                    if (property == null)
+
+                    // If the property is a List, handle it differently
+                    if (propertyName.EndsWith("]"))
                     {
-                        value = $"[ERROR: Property {propertyName} does not exist]";
-                        break;
+                        // The property is an indexed item in a list
+                        var indexStart = propertyName.IndexOf('[');
+                        var indexEnd = propertyName.IndexOf(']');
+                        var listPropertyName = propertyName.Substring(0, indexStart);
+                        var index = int.Parse(propertyName.Substring(indexStart + 1, indexEnd - indexStart - 1));
+
+                        if (!string.IsNullOrEmpty(listPropertyName))
+                        {
+                            // The list is a property of the entity
+                            var listProperty = value.GetType().GetProperty(listPropertyName);
+                            if (listProperty == null)
+                            {
+                                value = $"[ERROR: Property {listPropertyName} does not exist]";
+                                break;
+                            }
+
+                            value = listProperty.GetValue(value);
+                        }
+
+                        var list = value as IList;
+                        if (list == null || index < 0 || index >= list.Count)
+                        {
+                            value = $"[ERROR: Index {index} is out of range for {listPropertyName}]";
+                            break;
+                        }
+
+                        value = list[index];
                     }
-                    value = property.GetValue(value);
+                    else
+                    {
+                        var property = value.GetType().GetProperty(propertyName);
+                        if (property == null)
+                        {
+                            value = $"[ERROR: Property {propertyName} does not exist]";
+                            break;
+                        }
+                        value = property.GetValue(value);
+                    }
+                    
                 }
 
                 message = message.Replace($"{{{placeholder}}}", value?.ToString());
